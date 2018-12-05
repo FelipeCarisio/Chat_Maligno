@@ -54,4 +54,48 @@ public class Usuario
         this.conexao.close();
     }
 
+    public int hashCode()
+    {
+		int ret = 13;
+
+		ret = ret * 2 + this.nome.hashCode();
+
+		ret = ret * 2 + this.conexao.hashCode();
+
+		ret = ret * 2 + this.sala.hashCode();
+
+		ret = ret * 2 + this.receptor.hashCode();
+
+		ret = ret * 2 + this.transmissor.hashCode();
+
+		return ret;
+	}
+
+	public bool equals
+	{
+				if(x == this)
+				  return true;
+				if(x == null)
+				  return false;
+				if(x.getClass() != this.getClass())
+				return false;
+
+				if(this.nome != (Usuario)x.nome)
+				return false;
+
+				if(!this.conexao.equals((Usuario)x.conexao))
+				return false;
+
+				if(!this.receptor.equals((Usuario)x.receptor))
+				return false;
+
+				if(!this.transmissor.equals((Usuario)x.transmissor))
+				return false;
+
+				if(!this.sala.equals((Usuario)x.sala))
+				return false;
+
+				return true;
+	}
+
 }
