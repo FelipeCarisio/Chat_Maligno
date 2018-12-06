@@ -1,3 +1,6 @@
+import bd.*;
+import bd.daos.*;
+import bd.bdos.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -78,7 +81,7 @@ public class CuidadoraDeUsuario extends Thread
 												   }
 		                                           synchronized(salaSelecionada)
 		                                           {
-													   salaSelecionada.incluir(usuario);
+													   salaSelecionada.incluir(this.usuario);
 												   }
 		                                            return;
 											   }
@@ -151,11 +154,7 @@ public class CuidadoraDeUsuario extends Thread
     {
 	 ObjectOutputStream oos = new ObjectOutputStream(conexao.getOutputStream());
      ObjectInputStream ois = new ObjectInputStream(conexao.getInputStream());
-
-     for(;;)
-     {
-       preSala(oos,ois);
-       conversar();
-     }
+     preSala(oos,ois);
+     conversar();
     }
 }
