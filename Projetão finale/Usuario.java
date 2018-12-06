@@ -1,3 +1,8 @@
+/**
+@author Felipe Carisio, Ivan Knobel, João Augusto
+
+Classe usuário
+*/
 
 import java.io.*;
 import java.awt.*;
@@ -13,11 +18,20 @@ public class Usuario
     private ObjectInputStream  receptor;
     private Sala               sala;
 
+    /**
+	Construtor da classe
+	@param conexao é a socket do usuário
+	@param transmissor é o transmissor do usuário
+	@param receptor é o receptor do usuário
+	@param nome é o nome do usuário
+	@param sala é a sala do usuário
+	@throws se qualquer parâmetro for nulo
+    */
     public Usuario (Socket conexao,
                     ObjectOutputStream transmissor,
                     ObjectInputStream  receptor,
                     String nome,
-                    Sala sala) throws Exception // se parametro nulos
+                    Sala sala) throws Exception
     {
 		if(conexao == null)
 		   throw new Exception("O parametro de socket esta nulo.");
@@ -38,16 +52,28 @@ public class Usuario
         // guardar parametros nos atributos
     }
 
-    //getNome
+
+    /**
+	Getter do nome
+    */
     public String getNome()
     {
 		return this.nome;
 	}
 
+    /**
+	Getter de sala
+    */
 	public Sala getSala()
 	{
 		return this.sala;
 	}
+
+    /**
+    Método para enviar
+	@param x pe uma coisa com o valor que será enviado pelo transmissor
+	@throws se x for nulo
+    */
     public void envia (Coisa x) throws Exception
     {
 		if(x == null)
@@ -56,6 +82,10 @@ public class Usuario
         this.transmissor.flush();
     }
 
+    /**
+    Método que recebe
+    @throws se o obj lido for nulo
+    */
     public Coisa recebe ()  throws Exception
     {
 		Object obj = this.receptor.readObject();
@@ -66,6 +96,10 @@ public class Usuario
 		return (Coisa)obj;
     }
 
+    /**
+    Método para fechar tudo
+    @throws pois chama métodos que lançam execeções
+    */
     public void fechaTudo () throws Exception
     {
         this.transmissor.close();
@@ -73,6 +107,9 @@ public class Usuario
         this.conexao.close();
     }
 
+    /**
+    hashCode da classe
+    */
     public int hashCode()
     {
 		int ret = 13;
@@ -90,12 +127,18 @@ public class Usuario
 		return ret;
 	}
 
+    /**
+    toString da classe
+    */
 	public String toString()
 	{
 		String ret = "O usuario de nome: " + this.nome + " pertence à sala: " + this.sala.getNome();
 		return ret;
 	}
 
+    /**
+    equals da classe
+    */
 	public boolean equals (Object x)
 	{
 				if(x == this)

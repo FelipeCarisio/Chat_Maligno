@@ -1,42 +1,62 @@
+/**
+@author Felipe Carisio, Ivan Knobel, João Augusto
+
+Classe salasDisponiveis
+*/
+
 public class SalasDisponiveis implements Coisa
 {
-	 private String conteudo;
+    private String conteudo;
 
-	 	public SalasDisponiveis(String[] salasDisponiveis) throws Exception
-	 	{
-	 		if(salasDisponiveis != null)
-	 		{
-	 		   for(String i : salasDisponiveis)
-	 		   this.conteudo += i + "\n";
-		    }
-	 		else
-	 		    throw new Exception("Não há de onde se pegar salas");
-	 	}
+    /**
+	Construtor da classe
+	@param salasDisponiveis que é um aray com todas as salas
+	@throws se o parâmetro for nulo
+    */
+	public SalasDisponiveis(String[] salasDisponiveis) throws Exception
+	{
+		if(salasDisponiveis != null)
+		{
+		   for(String i : salasDisponiveis)
+		   this.conteudo += i + "\n";
+		}
+		else
+			throw new Exception("Não há de onde se pegar salas");
+	}
 
-	 	public int hashCode()
-	 	{
-	 		int ret = 3 * 13 + conteudo.hashCode();
-	 		return ret;
-	 	}
+    /**
+	hashCode da classe
+    */
+	public int hashCode()
+	{
+		int ret = 3 * 13 + conteudo.hashCode();
+		return ret;
+	}
 
-	 	public String toString()
-	 	{
-	 		return this.conteudo;
-	 	}
+    /**
+	toString da classe
+    */
+	public String toString()
+	{
+		return this.conteudo;
+	}
 
-	 	public boolean equals(Object x)
-	 	{
-	 		if(x == this)
-	 		  return true;
-	 		if(x == null)
-	 		  return false;
-	 		if(x.getClass() != this.getClass())
-	 		return false;
+    /**
+	equals da classe
+    */
+	public boolean equals(Object x)
+	{
+		if(x == this)
+		  return true;
+		if(x == null)
+		  return false;
+		if(x.getClass() != this.getClass())
+		return false;
 
-            SalasDisponiveis ret = (SalasDisponiveis)x;
-	 		if(this.conteudo != ret.conteudo)
-	 		return false;
+		SalasDisponiveis ret = (SalasDisponiveis)x;
+		if(this.conteudo != ret.conteudo)
+		return false;
 
-	 		return true;
+		return true;
 	}
 }

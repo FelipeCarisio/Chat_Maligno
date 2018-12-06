@@ -1,7 +1,19 @@
+/**
+@author Felipe Carisio, Ivan Knobel, João Augusto
+
+Classe escolhaDeNome
+*/
+
 public class EscolhaDeNome implements Coisa
 {
 	private String conteudo;
 
+
+    /**
+    Construtor da classe
+    @param nomeSelecionado é o nome que o usuário escolheu
+    @throws se o parametro for nulo
+    */
 	public EscolhaDeNome(String nomeSelecionado) throws Exception
 	{
 		if(nomeSelecionado != null)
@@ -10,17 +22,26 @@ public class EscolhaDeNome implements Coisa
 		    throw new Exception("Nome Vazio");
 	}
 
+    /**
+    hashCode da classe
+    */
 	public int hashCode()
 	{
 		int ret = 3 * 13 + conteudo.hashCode();
 		return ret;
 	}
 
+    /**
+    toString da classe
+    */
 	public String toString()
 	{
 		return this.conteudo;
 	}
 
+    /**
+    equals da classe
+    */
 	public boolean equals(Object x)
 	{
 		if(x == this)

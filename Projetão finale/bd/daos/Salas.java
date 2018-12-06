@@ -1,11 +1,19 @@
+/**
+@author Felipe Carisio, Ivan Knobel, João Augusto
+DAO do projeto
+*/
+
 package bd.daos;
 
 import java.util.ArrayList;
 import java.sql.*;
 import bd.bdos.*;
 
-public class Salas //DAO
+public class Salas
 {
+	/**
+	Método que devolve um ArrayList de salas
+	*/
     public static ArrayList<Sala> getSalas()
     {
         Sala sala = null;
