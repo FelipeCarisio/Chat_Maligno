@@ -1,3 +1,11 @@
+
+import enviaveis.*;
+import java.io.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.net.*;
+
 public class Usuario
 {
     private String             nome;
@@ -10,7 +18,7 @@ public class Usuario
                     ObjectOutputStream transmissor,
                     ObjectInputStream  receptor,
                     String nome,
-                    Sala sala) throws Exeception // se parametro nulos
+                    Sala sala) throws Exception // se parametro nulos
     {
 		if(conexao == null)
 		   throw new Exception("O parametro de socket esta nulo.");
@@ -36,18 +44,25 @@ public class Usuario
     {
 		return this.nome;
 	}
-    public void envia (Coisa x)
+    public void envia (Coisa x) throws Exception
     {
-        this.transmissor.writeObject (x);
+		if(x == null)
+			throw new Exception("O objeto esta nulo");
+        this.transmissor.writeObject(x);
         this.transmissor.flush();
     }
 
-    public Coisa recebe ()
+    public Coisa recebe ()  throws Exception
     {
-        return (Coisa)this.receptor.readObject();
+		Object obj = this.receptor.readObject();
+
+		if(!(obj instanceof Coisa))
+			throw new Exception("O objeto não é valido pois não é enviavel");
+
+		return (Coisa)obj;
     }
 
-    public void fechaTudo ()
+    public void fechaTudo () throws Exception
     {
         this.transmissor.close();
         this.receptor.close();
@@ -71,7 +86,13 @@ public class Usuario
 		return ret;
 	}
 
-	public bool equals
+	public String toString()
+	{
+		String ret = "O usuario de nome: " + this.nome + " pertence à sala: " + this.sala.getNome();
+		return ret;
+	}
+
+	public boolean equals (Object x)
 	{
 				if(x == this)
 				  return true;
@@ -80,19 +101,20 @@ public class Usuario
 				if(x.getClass() != this.getClass())
 				return false;
 
-				if(this.nome != (Usuario)x.nome)
+                Usuario ret = (Usuario)x;
+				if(this.nome != ret.getNome())
 				return false;
 
-				if(!this.conexao.equals((Usuario)x.conexao))
+				if(!this.conexao.equals(ret.conexao))
 				return false;
 
-				if(!this.receptor.equals((Usuario)x.receptor))
+				if(!this.receptor.equals(ret.receptor))
 				return false;
 
-				if(!this.transmissor.equals((Usuario)x.transmissor))
+				if(!this.transmissor.equals(ret.transmissor))
 				return false;
 
-				if(!this.sala.equals((Usuario)x.sala))
+				if(!this.sala.equals(ret.sala))
 				return false;
 
 				return true;
