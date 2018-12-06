@@ -44,9 +44,9 @@ public class Sala
 	  return local;
   }
 
-  public Usuario getUsuario(int i)
+  public Usuario getUsuario(int i)throws Exception
   {
-	  if( i < usuarios.size)
+	  if( i < usuarios.size())
 	      return usuarios.get(i);
 	  else
 	  throw new Exception("indice fora do vetor");

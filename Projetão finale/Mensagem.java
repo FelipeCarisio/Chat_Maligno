@@ -1,13 +1,29 @@
 public class Mensagem implements Coisa
 {
 	private String conteudo;
+	private String nome = null;
 
-		public Mensagem(String msg, String nome) throws Exception
+        public Mensagem(String msg, String nom)throws Exception
+        {
+			if(msg != null && nom != null)
+			{
+						   this.conteudo = msg;
+						   this.nome = nom;
+		    }
+						else
+			    throw new Exception("Mensagem mal estruturada sem conteudo");
+		}
+		public Mensagem(String msg) throws Exception
 		{
-			if(msg != null || nome != null)
-			   conteudo = nome + ": " + msg;
+			if(msg != null)
+			   conteudo = msg;
 			else
 			    throw new Exception("Mensagem mal estruturada sem conteudo");
+		}
+
+		public String getNome()
+		{
+			return this.nome;
 		}
 
 		public int hashCode()
@@ -18,7 +34,12 @@ public class Mensagem implements Coisa
 
 		public String toString()
 		{
+			if(nome == null)
 			return this.conteudo;
+			else
+			{
+				return ("para:" + this.nome + " :" + this.conteudo);
+			}
 		}
 
 		public boolean equals(Object x)

@@ -1,5 +1,4 @@
 
-import enviaveis.*;
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -43,6 +42,11 @@ public class Usuario
     public String getNome()
     {
 		return this.nome;
+	}
+
+	public Sala getSala()
+	{
+		return this.sala;
 	}
     public void envia (Coisa x) throws Exception
     {

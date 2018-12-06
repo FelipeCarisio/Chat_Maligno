@@ -12,7 +12,7 @@ public class CuidadoraDeUsuario extends Thread
         // validar se conexao e/ou salas ==null, lançando exceção
         if(conexao == null)
           throw new Exception("parametro de conexao nulo");
-        if(Salas == null)
+        if(salas == null)
           throw new Exception("parametro de Salas nulo");
 
         this.conexao=conexao;
@@ -22,7 +22,7 @@ public class CuidadoraDeUsuario extends Thread
     private void preSala(ObjectOutputStream paramOOS,ObjectInputStream paramOIS )
     {
 		// declarar e instanciar OOS e OIS
-		        ObjectOutputStream oos = paramOOS);
+		        ObjectOutputStream oos = paramOOS;
 		        ObjectInputStream ois = paramOIS;
 
 		        // interagir com o usr via OOS e OIS ate descobrir o nome da sala em que ele deseja entrar, eventualmente, informando sala cheia
@@ -48,10 +48,10 @@ public class CuidadoraDeUsuario extends Thread
 							 recebido = ois.readObject();
 							 if(recebido instanceof EscolhaDeSala)
 							    {
-									Sala salaSelecionada
+									Sala salaSelecionada;
 									synchronized(this.salas)
 									{
-									salaSelecionada = this.salas.getSala(((EscolhaDeSala)recebido).toString())
+									salaSelecionada = this.salas.getSala(((EscolhaDeSala)recebido).toString());
 								    }
 								    boolean estaCheia, jaExiste;
 								    synchronized(salaSelecionada)
@@ -69,50 +69,93 @@ public class CuidadoraDeUsuario extends Thread
 												   usuarios = salaSelecionada.getUsuarios();
 											       for(int i = 0; i < salaSelecionada.getLotacao(); i++)
 											         {
-											            salaSelecionada.getUsuario(i).envia(new AvisoDeEntrada(Usuario.getNome()));
+											            salaSelecionada.getUsuario(i).envia(new AvisoDeEntradaNaSala(Usuario.getNome()));
 													 }
 											       }
 											       for(String nome : usuarios)
 											       {
-													   this.usuario.envia(new AvisoDeEntrada(nome));
+													   this.usuario.envia(new AvisoDeEntradaNaSala(nome));
 												   }
 		                                           synchronized(salaSelecionada)
 		                                           {
-													   salaSelecionada.incuir(usuario);
+													   salaSelecionada.incluir(usuario);
 												   }
 		                                            return;
 											   }
 											 else
+											 {
+											 oos.writeObject(new AvisoDeUsuarioJaExiste());
+											 oos.flush();
 											 break;
+										     }
 									else
-
+									{
+										oos.writeObject(new AvisoDeSalaCheia());
+										oos.flush();
+									}
 								}
 						 }
 				     }
 			       }
              	}
 
+    private void conversar()
+    {
+		Coisa recebido =null;
+		Sala salaAtual = this.usuario.getSala();
+		     do
+		        {
+		         recebido = usuario.recebe();
+		              if(recebido instanceof Mensagem)
+		              {
+
+						  Mensagem novaMsg = (Mensagem)recebido;
+						  if(novaMsg.getNome() == null)
+						  {
+							  synchronized(salaAtual)
+							  {
+								  for(int i = 0; i < salaAtual.getLotacao(); i++)
+								  {
+									  if(this.usuario != salaAtual.getUsuario(i))
+									  salaAtual.getUsuario(i).envia(novaMsg);
+								  }
+							  }
+						  }
+						  else
+						  {
+							  synchronized(salaAtual)
+							  {
+								  if(salaAtual.existeUsuario(novaMsg.getNome()) > -1)
+								     salaAtual.getUsuario(novaMsg.getNome()).envia(novaMsg);
+								  else
+								      this.usuario.envia(new AvisoUsuarioInexistente(novaMsg.getNome()));
+							  }
+						  }
+				  }
+		        }
+        while (!(recebido instanceof PedidoParaSairDaSala));
+        synchronized(salaAtual)
+        {
+        for(int i = 0; i < salaAtual.getLotacao(); i++)
+			  {
+			   if(this.usuario != salaAtual.getUsuario(i))
+				  salaAtual.getUsuario(i).envia(new AvisoDeSaidaDaSala(this.usuario.getNome()));
+			  }
+	    }
+	    salaAtual.excluir(this.usuario.getNome());
+	    this.usuario.fechaTudo();
+	    this.usuario = null;
+	}
+
     public void run ()
     {
 	 ObjectOutputStream oos = new ObjectOutputStream(conexao.getOutputStream());
-     ObjectInputStream ois = new ObjectInputStream(conexao.getInputStream);
-	 Coisa recebidoRun =null;
-     do
+     ObjectInputStream ois = new ObjectInputStream(conexao.getInputStream());
+
+     for(;;)
      {
-
        preSala(oos,ois);
-        do
-        {
-         recebido = usuario.recebe();
-              if(
-            // receber mensagens, avisos de entrada na e de saida da sala
-            // se for mensagem, pega nela o destinatario, acha o destinatario na sala e manda para ele a mensagem
-        }
-        while (!(recebido instanceof PedidoParaSairDaSala));
-
-        // remover this.usuario da sala
-        // mandar new AvisoDeSaidaDaSala(this.usuario.getNome()) para todos da sala
-        this.usuario.fechaTudo();
-      }while(!(recebido instanceof PedidoParaEncerrar))
+       conversar();
+     }
     }
 }
