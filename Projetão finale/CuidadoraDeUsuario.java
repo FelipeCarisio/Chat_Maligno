@@ -3,7 +3,7 @@
 
 Classe cuidadoraDeUsuario
 */
-
+import enviavel.*;
 import bd.*;
 import bd.daos.*;
 import bd.bdos.*;

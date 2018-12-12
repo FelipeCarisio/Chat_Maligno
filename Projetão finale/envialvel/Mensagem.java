@@ -1,11 +1,12 @@
 /**
 @author Felipe Carisio, Ivan Knobel, João Augusto
 */
-
+package enviavel;
 public class Mensagem implements Coisa
 {
 	private String conteudo;
-	private String nome = null;
+	private String emissor, remetente = null;
+
 
 
 	/**
@@ -19,7 +20,7 @@ public class Mensagem implements Coisa
 		if(msg != null && nom != null)
 		{
 					   this.conteudo = msg;
-					   this.nome = nom;
+					   this.emissor = nom;
 		}
 					else
 			throw new Exception("Mensagem mal estruturada sem conteudo");
@@ -30,12 +31,16 @@ public class Mensagem implements Coisa
 	@param msg é o conteúdo da mensagem
 	@throws lança exceção se o parâmetro for nulo
 	*/
-	public Mensagem(String msg) throws Exception
-	{
-		if(msg != null)
-		   this.conteudo = msg;
-		else
-			throw new Exception("Mensagem mal estruturada sem conteudo");
+	public Mensagem(String msg, String nom, String reme)throws Exception
+		{
+			if(msg != null || nom != null || reme != null)
+			{
+						   this.conteudo = msg;
+						   this.emissor = nom;
+						   this.remetente = reme;
+			}
+						else
+				throw new Exception("Mensagem mal estruturada sem conteudo");
 	}
 
    /**
@@ -64,7 +69,10 @@ public class Mensagem implements Coisa
 		return this.conteudo;
 		else
 		{
-			return ("para:" + this.nome + " :" + this.conteudo);
+			String reme = "";
+			if(this.remetente != null)
+			   reme = "para: " + this.remetente;
+			return (this.emissor + ": " reme + " :" + this.conteudo);
 		}
 	}
 
