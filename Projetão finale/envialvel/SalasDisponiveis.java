@@ -6,7 +6,7 @@ Classe salasDisponiveis
 
 public class SalasDisponiveis implements Coisa
 {
-    private String conteudo;
+    private String[] conteudo;
 
     /**
 	Construtor da classe
@@ -18,7 +18,7 @@ public class SalasDisponiveis implements Coisa
 		if(salasDisponiveis != null)
 		{
 		   for(String i : salasDisponiveis)
-		   this.conteudo += i + "\n";
+		   this.conteudo[i] = i;
 		}
 		else
 			throw new Exception("Não há de onde se pegar salas");
@@ -33,12 +33,20 @@ public class SalasDisponiveis implements Coisa
 		return ret;
 	}
 
+	public String[] getSalas()
+	{
+		return this.conteudo;
+	}
+
     /**
 	toString da classe
     */
 	public String toString()
 	{
-		return this.conteudo;
+		String salas;
+		for(String i : salasDisponiveis)
+		   salas += this.conteudo[i] + "\n";
+		return salas;
 	}
 
     /**

@@ -6,5 +6,6 @@ Classe para tipagem
 
 public class PedidoParaSairDaSala implements Coisa
 {
-
+   public PedidoParaSairDaSala()
+   {}
 }

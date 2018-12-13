@@ -24,7 +24,6 @@ public class JanelaChat
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 	private String nome;
-	private ArrayList<String> usuarios;
 
 	//paineis
 	private JPanel painelLogin = new JPanel();
@@ -41,6 +40,12 @@ public class JanelaChat
 		inicializa();
 	}
 
+    public fechaTudo()
+    {
+		this.conexao.close();
+		this.transmissor.close();
+		this.janela.close();
+	}
 	public exibirSalas(String[] salasDisponiveis) throws Exception
 	{
 		if(salasDisponiveis == null)
@@ -56,8 +61,53 @@ public class JanelaChat
 		  throw new Exception("não ha um erro para ser mostrado");
 		JOptionPane.showMessageDialog(null, erro);
 	}
+
+    public void iniciaConversa()
+    {
+		this.janela.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+		this.nome = txtNomeUsuario.getText().trim();
+		lblSalaAtual.setText(lbl.SalaAtual.getText() + salas.getSelectedItem());
+		this.janela.remove(painelLogin);
+
+		painelChat.setBorder(javax.swing.BorderFactory.createTitledBorder("Conversas"));
+		painelChat.setLayout(new BorderLayout());
+
+        TratadorDeEventos tratador = new TratadorDeEventos();
+		chat.setEditable(false);
+		btnEnviar.setText("Enviar");
+		btnEnviar.addActionListener(tratador);
+
+		painelChat.add(btnEnviar);
+		painelChat.add(chat);
+		painelChat.add(lblSalaAtual);
+		painelChat.add(txtMensagem);
+
+		this.janela.setSize(850,500);
+
+	}
+
 	public void inicializa()
 	{
+		TratadorDeEvento Tratador = new TratadorDeEvento();
+		btnConectar.addActionListener(Tratador);
+		painelLogin.setLayout(new GridLayout(10,1));
+
+		painelLogin.add(lblLogin);
+		painelLogin.add(btnConectar);
+		painelLogin.add(txtNomeUsuario);
+		painelLogin.add(salas);
+
+		txtNomeUsuario.setColumns(30);
+
+		this.janela.setSize(750,600);
+		this.janela.getContentPane().setLayout(new BorderLayout());
+
+		this.janela.addComponentListener (new TratadorDeRedimensionamento());
+		this.janela.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+		this.janela.setVisible(true);
+
+		this.janela.add(painelLogin, BorderLayout.CENTER);
 	}
 
     public void mostra(String conteudo, String remetente) throws Exception
@@ -87,6 +137,15 @@ public class JanelaChat
 			doc.insertString(doc.getLength(), "de:" + destino + "para: " remetente + ": " + conteudo + "\n",
 	                         doc.getStyle("yellow"));
 
+	}
+
+	public void exibeAvisoMovimento(String aviso)
+	{
+		if(aviso == null || aviso.trim().equals(""))
+					throw new Exception("aviso null");
+
+				 doc.insertString(doc.getLength(),aviso,
+				 doc.getStyle("bold"));
 	}
 
 
@@ -130,9 +189,9 @@ public class JanelaChat
 				}
 				else
 				{
-   				transmissor.writeObject(new EscolhaDeSala(s));
+				transmissor.writeObject(new EscolhaDeNome(n))
    				transmissor.flush();
-   				transmissor.writeObject(new EscolhaDeNome(n))
+   				transmissor.writeObject(new EscolhaDeSala(s));
    				transmissor.flush();
 			    }
    			}
