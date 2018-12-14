@@ -113,7 +113,25 @@ public class JanelaChat
         this.janela.getContentPane().setLayout(new BorderLayout());
 
         this.janela.addComponentListener (new TratadorDeRedimensionamento());
-        this.janela.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+        this.janela.setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
+        this.janela.addWindowListener(new WindowAdapter()
+        {
+	public void windowClosing(WindowEvent evt)  
+        {
+		if (JOptionPane.showConfirmDialog(null,"Deseja sair")==JOptionPane.OK_OPTION)
+                {
+                    try{
+                    oos.writeObject(new PedidoParaSairDaSala());
+                    }
+                    catch(Exception e)
+                    {}
+                    finally
+                    {
+                         System.exit(0);
+                    }
+	        }    
+        }
+        });
         this.janela.setVisible(true);
 
         this.janela.add(painelLogin, BorderLayout.CENTER);
@@ -186,7 +204,7 @@ public class JanelaChat
         {
             try
             {
-                PrintWriter transmissor = new PrintWriter(conexao.getOutputStream());
+                ObjectOutputStream transmissor = new ObjectOutputStream(conexao.getOutputStream());
                 
                 String s = salas.getSelectedItem()+"";
                 String n = txtNomeUsuario.getText();
@@ -196,9 +214,9 @@ public class JanelaChat
                 }
                 else
                 {
-                    transmissor.println(new EscolhaDeNome(n));
+                    transmissor.writeObject(new EscolhaDeNome(n));
                     transmissor.flush();
-                    transmissor.println(new EscolhaDeSala(s));
+                    transmissor.writeObject(new EscolhaDeSala(s));
                     transmissor.flush();
                 }
             }
@@ -225,26 +243,6 @@ public class JanelaChat
                     mostra(s, "Você: ");
                     String conteudo = nome +": " + s;
                     transmissor.println(new Mensagem(s, conteudo));
-                    transmissor.flush();
-                    txtMensagem.setText("");
-                }
-            }
-            catch(Exception err)
-            {}
-        }
-
-        public void trateClickNoBotaoEnviarPriv()
-        {
-            String s = txtMensagem.getText();
-
-            try
-            {
-                PrintWriter transmissor = new PrintWriter(conexao.getOutputStream());
-                
-                if(s != null || !(s.trim().equals("")))
-                {
-                    mostra(s, "Voc�(para: " + salas.getSelectedItem() + ")");
-                    transmissor.println(new Mensagem(salas.getSelectedItem() + "", txtNomeUsuario.getText(), s));
                     transmissor.flush();
                     txtMensagem.setText("");
                 }

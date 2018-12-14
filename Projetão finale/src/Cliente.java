@@ -46,6 +46,7 @@ public class Cliente //instancia janela
                                     break;
                     }
 
+               
                     recebido = (Coisa)receptor.readObject();
 
                     if(recebido instanceof UsuarioDisponivel)
@@ -72,10 +73,15 @@ public class Cliente //instancia janela
                             }
 
                             else 
-                                if(recebido instanceof AvisoDeEntradaNaSala || recebido instanceof AvisoDeSaidaDaSala )
-                            {
-                                    janela.exibeAvisoMovimento(((AvisoDeEntradaNaSala)recebido).toString());
-                            }
+                                if(recebido instanceof AvisoDeEntradaNaSala )
+                                {
+                                 janela.exibeAvisoMovimento(((AvisoDeEntradaNaSala)recebido).toString());
+                                }
+                            else
+                                 if(recebido instanceof AvisoDeSaidaDaSala )
+                                 {
+                                  janela.exibeAvisoMovimento(((AvisoDeSaidaDaSala)recebido).toString());
+                                 }
 
                             else 
                                 if(recebido instanceof PedidoParaSairDaSala)

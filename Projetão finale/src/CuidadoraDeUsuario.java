@@ -12,6 +12,7 @@ import enviavel.AvisoDeSalaCheia;
 import enviavel.EscolhaDeSala;
 import enviavel.SalasDisponiveis;
 import enviavel.Mensagem;
+import enviavel.UsuarioDisponivel;
 import enviavel.*;
 import bd.*;
 import bd.daos.*;
@@ -116,6 +117,7 @@ public class CuidadoraDeUsuario extends Thread
                                 {
                                         salaSelecionada.incluir(this.usuario);
                                 }
+                                     oos.writeObject(new UsuarioDisponivel());
                                      return;
                             }
                             else

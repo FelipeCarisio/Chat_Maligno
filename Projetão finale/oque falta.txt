@@ -1,4 +1,3 @@
-arrumar os packages
-fazer os testes e arrumar a janela de acordo com a imagem caso nescessario
+arrumar o design da janela pois os paineis não estão divididos corretamente
 arrumar o programa caso nescessário
 entregar pro god mali
