@@ -61,8 +61,11 @@ public class Salas
 
       for(int i = 0; i < this.salas.size(); i++)
       {
-              if (this.salas.get(i).getNome() == nom)
+              if (this.salas.get(i).getNome().equals(nom))
+              {
                       local = i;
+              }
+              
       }
       return local;
      }

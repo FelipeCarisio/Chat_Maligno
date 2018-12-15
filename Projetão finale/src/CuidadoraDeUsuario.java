@@ -77,7 +77,8 @@ public class CuidadoraDeUsuario extends Thread
                     
                     recebido = (Coisa)ois.readObject();
                     if(recebido instanceof EscolhaDeSala)
-                    {                          
+                    {               
+                        System.out.println(((EscolhaDeSala)recebido).toString());
                         synchronized(this.salas)
                         {
                             salaSelecionada = this.salas.getSala(((EscolhaDeSala)recebido).toString());
@@ -102,17 +103,21 @@ public class CuidadoraDeUsuario extends Thread
                                 synchronized(salaSelecionada)
                                 {
                                     usuarios = salaSelecionada.getUsuarios();
-                                    for(int i = 0; i < salaSelecionada.getLotacao(); i++)
+                                    if(usuarios!=null)
                                     {
-                                        salaSelecionada.getUsuario(i).envia(new AvisoDeEntradaNaSala(this.usuario.getNome()));
+                                        for(int i = 0; i < salaSelecionada.getLotacao(); i++)
+                                        {
+                                         salaSelecionada.getUsuario(i).envia(new AvisoDeEntradaNaSala(this.usuario.getNome()));
+                                        }
                                     }
                                 }
-                                
+                                if(usuarios != null)
+                                {
                                 for(String nome : usuarios)
                                 {
                                         this.usuario.envia(new AvisoDeEntradaNaSala(nome));
                                 }
-                                
+                                }
                                 synchronized(salaSelecionada)
                                 {
                                         salaSelecionada.incluir(this.usuario);

@@ -1,7 +1,7 @@
 package enviavel;
 
 /**
-@author Felipe Carisio, Ivan Knobel, Jo�o Augusto
+@author Felipe Carisio, Ivan Knobel, Joao Augusto
 
 Classe escolhaDeNome
 */
@@ -13,7 +13,7 @@ public class EscolhaDeNome implements Coisa
 
     /**
     Construtor da classe
-    @param nomeSelecionado � o nome que o usu�rio escolheu
+    @param nomeSelecionado  o nome que o usuario escolheu
     @throws se o parametro for nulo
     */
 	public EscolhaDeNome(String nomeSelecionado) throws Exception

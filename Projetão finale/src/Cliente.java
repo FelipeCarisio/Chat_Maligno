@@ -24,9 +24,11 @@ public class Cliente //instancia janela
                 {
                     Socket conexao = new Socket("localhost",12321);   //ip e porta
                     //colocar um receptor pra enviar pra janela
-                    JanelaChat janela = new JanelaChat(conexao);
-
+                    
                     ObjectInputStream receptor = new ObjectInputStream(conexao.getInputStream());
+                    ObjectOutputStream transmissor = new ObjectOutputStream(conexao.getOutputStream());
+                    JanelaChat janela = new JanelaChat(conexao, transmissor, receptor);
+
                     
                     Coisa recebido = null;
                     
@@ -36,21 +38,17 @@ public class Cliente //instancia janela
 
                         if(recebido instanceof SalasDisponiveis)
                            janela.exibirSalas(((SalasDisponiveis)recebido).getSalas());
-                        else 
+                        
                             if(recebido instanceof AvisoDeSalaCheia)
                                janela.jogaErro("A sala escolhida est� cheia!");
                             else 
                                 if(recebido instanceof AvisoDeNomeJaExiste)
                                    janela.jogaErro("A sala escolhida � inv�lida!");
                                 else
+                                    if(recebido instanceof UsuarioDisponivel)
                                     break;
                     }
-
-               
-                    recebido = (Coisa)receptor.readObject();
-
-                    if(recebido instanceof UsuarioDisponivel)
-                    {
+                   
                         janela.iniciaConversa();
 
                         for(;;)
@@ -90,7 +88,7 @@ public class Cliente //instancia janela
 
                         janela.fechaTudo();
                         receptor.close();
-                    }
+                    
                 }
 
 	    }

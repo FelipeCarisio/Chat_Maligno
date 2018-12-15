@@ -86,11 +86,12 @@ public class Sala
   */
   public String[] getUsuarios()
   {
-    String[] users = new String[this.capacidade];
+    String[] users = null;
     if (this.lotacao == 0)
     {
        return users;
     }
+    users =new String[this.capacidade];
    for(int i = 0; i < this.usuarios.size(); i++)
            {
                    users[i] = this.usuarios.get(i).getNome();

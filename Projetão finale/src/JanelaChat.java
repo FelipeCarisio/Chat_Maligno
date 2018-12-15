@@ -15,8 +15,8 @@ public class JanelaChat
     private JFrame janela = new JFrame("sala");
     private JLabel lblLogin = new JLabel("escolha sua sala e o seu nick desejado:");
     private JLabel lblSalaAtual = new JLabel("Sala: ");
-    private JButton btnConectar = new JButton("conectar");
-    private JButton btnEnviar = new JButton("Enviar =>");
+    private JButton btnConectar = new JButton("Conectar");
+    private JButton btnEnviar = new JButton("Enviar");
     private JTextField txtNomeUsuario = new JTextField();
     private JTextField txtMensagem = new JTextField();
     private JComboBox salas = new JComboBox();
@@ -30,15 +30,17 @@ public class JanelaChat
 
     //paineis
     private JPanel painelLogin = new JPanel();
-    private JPanel painelChat = new JPanel();
+    private JPanel painelChat = new JPanel(new BorderLayout());
     //
 
-    public JanelaChat(Socket socket) throws Exception
+    public JanelaChat(Socket socket, ObjectOutputStream oos, ObjectInputStream ois) throws Exception
     {
         if(socket == null)
           throw new Exception("parametro socket nulo");
         this.conexao = socket;
-        this.oos = new ObjectOutputStream(this.conexao.getOutputStream());
+        this.oos = oos;
+        this.ois = ois;
+        
         inicializa();
     }
 
@@ -73,7 +75,7 @@ public class JanelaChat
     
 
      public void iniciaConversa()
-    {
+    {     
         this.janela.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         this.nome = txtNomeUsuario.getText().trim();
@@ -88,6 +90,7 @@ public class JanelaChat
         btnEnviar.setText("Enviar");
         btnEnviar.addActionListener(tratador);
 
+        janela.add(painelChat);
         painelChat.add(btnEnviar);
         painelChat.add(chat);
         painelChat.add(lblSalaAtual);
@@ -204,46 +207,47 @@ public class JanelaChat
         {
             try
             {
-                ObjectOutputStream transmissor = new ObjectOutputStream(conexao.getOutputStream());
+                //ObjectOutputStream transmissor = new ObjectOutputStream(conexao.getOutputStream());
                 
-                String s = salas.getSelectedItem()+"";
+                String s = salas.getSelectedItem().toString();
                 String n = txtNomeUsuario.getText();
-                if(n == null || n.trim().equals(""))
+                if(n == null || n.trim().equals("") || n.length() >30 || n.contains("(") || n.contains(")"))
                 {
                    jogaErro("Seu nome esta vazio ou possui um dos caracteres: '(' ')' porfavor corrigia-o");
                 }
                 else
                 {
-                    transmissor.writeObject(new EscolhaDeNome(n));
-                    transmissor.flush();
-                    transmissor.writeObject(new EscolhaDeSala(s));
-                    transmissor.flush();
+                    oos.writeObject(new EscolhaDeNome(n));
+                    oos.flush();
+                    oos.writeObject(new EscolhaDeSala(s));
+                    oos.flush();
                 }
             }
             catch(Exception err)
-            {}
+            {
+            System.out.println("fudeu");
+            }
         }
 
         public void trateClickNoBotaoEnviar()
         {
-            String s = txtMensagem.getText();
+            String s = txtMensagem.getText().trim();
 
             try
             {
-                PrintWriter transmissor = new PrintWriter(conexao.getOutputStream());
                 
                 if(s != null || !(s.trim().equals("")))
                 {
                     if(s.startsWith("(") || s.contains(")"))
                     {
-                       String nomeDestino = s.substring((s.indexOf("(") + 1), (s.indexOf(")") + 1));
+                       String nomeDestino = s.substring((s.indexOf("(") + 1), (s.indexOf(")") - 1));
                        
                        mostra(s, nomeDestino);
                     }
                     mostra(s, "Você: ");
                     String conteudo = nome +": " + s;
-                    transmissor.println(new Mensagem(s, conteudo));
-                    transmissor.flush();
+                    oos.writeObject(new Mensagem(s, conteudo));
+                    oos.flush();
                     txtMensagem.setText("");
                 }
             }
