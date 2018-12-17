@@ -31,6 +31,8 @@ public class JanelaChat
     //paineis
     private JPanel painelLogin = new JPanel();
     private JPanel painelChat = new JPanel(new BorderLayout());
+    private JPanel subpainelChat = new JPanel(new BorderLayout());
+    private CardLayout layoutJanela = new CardLayout();
     //
 
     public JanelaChat(Socket socket, ObjectOutputStream oos, ObjectInputStream ois) throws Exception
@@ -75,34 +77,16 @@ public class JanelaChat
     
 
      public void iniciaConversa()
-    {     
-        this.janela.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-        this.nome = txtNomeUsuario.getText().trim();
+    {       
         lblSalaAtual.setText(lblSalaAtual.getText() + salas.getSelectedItem());
-        this.janela.remove(painelLogin);
-
-        painelChat.setBorder(javax.swing.BorderFactory.createTitledBorder("Conversas"));
-        painelChat.setLayout(new BorderLayout());
-
-        TratadorDeEvento tratador = new TratadorDeEvento();
-        chat.setEnabled(false);
-        btnEnviar.setText("Enviar");
-        btnEnviar.addActionListener(tratador);
-
-        janela.add(painelChat);
-        painelChat.add(btnEnviar);
-        painelChat.add(chat);
-        painelChat.add(lblSalaAtual);
-        painelChat.add(txtMensagem);
-
+        layoutJanela.show(janela.getContentPane(),"chat");
         this.janela.setSize(850,500);
     }
 
     public void inicializa()
     {
-        TratadorDeEvento Tratador = new TratadorDeEvento();
-        btnConectar.addActionListener(Tratador);
+        TratadorDeEvento tratador = new TratadorDeEvento();
+        btnConectar.addActionListener(tratador);
         painelLogin.setLayout(new GridLayout(10,1));
 
         painelLogin.add(lblLogin);
@@ -113,10 +97,26 @@ public class JanelaChat
         txtNomeUsuario.setColumns(30);
 
         this.janela.setSize(750,600);
-        this.janela.getContentPane().setLayout(new BorderLayout());
+        this.janela.getContentPane().setLayout(layoutJanela);
 
         this.janela.addComponentListener (new TratadorDeRedimensionamento());
         this.janela.setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
+
+        painelChat.setBorder(javax.swing.BorderFactory.createTitledBorder("Conversas"));
+        painelChat.setLayout(new BorderLayout());
+
+        areaChat.setEnabled(false);
+        txtMensagem.setColumns(50);
+        btnEnviar.setText("Enviar");
+        btnEnviar.addActionListener(tratador);
+        
+        
+        subpainelChat.add( txtMensagem , BorderLayout.EAST);
+        subpainelChat.add(btnEnviar, BorderLayout.WEST);
+        painelChat.add(chat, BorderLayout.CENTER);
+        painelChat.add(lblSalaAtual, BorderLayout.NORTH);
+        painelChat.add(subpainelChat,BorderLayout.SOUTH);
+        
         this.janela.addWindowListener(new WindowAdapter()
         {
 	public void windowClosing(WindowEvent evt)  
@@ -137,7 +137,8 @@ public class JanelaChat
         });
         this.janela.setVisible(true);
 
-        this.janela.add(painelLogin, BorderLayout.CENTER);
+        this.janela.add(painelLogin, "login");
+        janela.add(painelChat,"chat");
     }
 
     public void mostra(String conteudo, String remetente) throws Exception
@@ -148,7 +149,7 @@ public class JanelaChat
         if(conteudo == null || conteudo.trim().equals(""))
            throw new Exception("texto null");
 
-        doc.insertString(doc.getLength(), remetente + ": " + conteudo + "\n",
+        doc.insertString(doc.getLength(), remetente +": " + conteudo + "\n",
                  doc.getStyle("pink"));
     }
 
@@ -163,7 +164,7 @@ public class JanelaChat
         if(conteudo == null || conteudo.trim().equals(""))
                 throw new Exception("mensagem null");
 
-        doc.insertString(doc.getLength(), "de:" + destino + "para: " + remetente + ": " + conteudo + "\n",  doc.getStyle("yellow"));
+        doc.insertString(doc.getLength(), "de " + remetente + "para " + destino + ": " + conteudo + "\n",  doc.getStyle("yellow"));
     }
 
     public void exibeAvisoMovimento(String aviso) throws Exception
@@ -171,7 +172,7 @@ public class JanelaChat
         if(aviso == null || aviso.trim().equals(""))
            throw new Exception("aviso null");
  
-        doc.insertString(doc.getLength(),aviso,
+        doc.insertString(doc.getLength(),aviso + "\n",
         doc.getStyle("bold"));
     }
 
@@ -221,6 +222,7 @@ public class JanelaChat
                     oos.flush();
                     oos.writeObject(new EscolhaDeSala(s));
                     oos.flush();
+                    nome = txtNomeUsuario.getText().trim();
                 }
             }
             catch(Exception err)
@@ -232,7 +234,6 @@ public class JanelaChat
         public void trateClickNoBotaoEnviar()
         {
             String s = txtMensagem.getText().trim();
-
             try
             {
                 
@@ -240,15 +241,20 @@ public class JanelaChat
                 {
                     if(s.startsWith("(") || s.contains(")"))
                     {
-                       String nomeDestino = s.substring((s.indexOf("(") + 1), (s.indexOf(")") - 1));
-                       
-                       mostra(s, nomeDestino);
+                       String nomeDestino = s.substring((s.indexOf("(") + 1), (s.indexOf(")")));
+                       String conteudo = s.substring(s.indexOf(")")+1);
+                       oos.writeObject(new Mensagem(conteudo, nome,nomeDestino));
+                       oos.flush();
+                       txtMensagem.setText("");            
+                       mostra(conteudo,nome, nomeDestino);
                     }
-                    mostra(s, "Você: ");
-                    String conteudo = nome +": " + s;
-                    oos.writeObject(new Mensagem(s, conteudo));
+                    else
+                    {
+                    mostra(s, "Você");                   
+                    oos.writeObject(new Mensagem(s, nome + ": "));
                     oos.flush();
                     txtMensagem.setText("");
+                    }
                 }
             }
             catch(Exception err)

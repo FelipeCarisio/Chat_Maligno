@@ -8,7 +8,7 @@ import enviavel.Coisa;
 public class Mensagem implements Coisa
 {
     private String conteudo;
-    private String emissor, remetente = null;
+    private String emissor, destinatario = null;
 
 
 
@@ -40,7 +40,7 @@ public class Mensagem implements Coisa
         {
             this.conteudo = msg;
             this.emissor = nom;
-            this.remetente = reme;
+            this.destinatario = reme;
         }
         else
             throw new Exception("Mensagem mal estruturada sem conteudo");
@@ -65,9 +65,9 @@ public class Mensagem implements Coisa
     /**
     Getter de nome
     */
-    public String getRemetente()
+    public String getDestinatario()
     {
-        return this.remetente;
+        return this.destinatario;
     }
 
     /**
@@ -85,8 +85,8 @@ public class Mensagem implements Coisa
     public String toString()
     {
         String reme = "";
-        if(this.remetente != null)
-           reme = "para: " + this.remetente;
+        if(this.destinatario != null)
+           reme = "para: " + this.destinatario;
         
         return this.emissor + ": " + reme + ": " + this.conteudo;
     }

@@ -1,3 +1,2 @@
-arrumar o design da janela pois os paineis não estão divididos corretamente
-arrumar o programa caso nescessário
+arrumar os bugs com os acentos e a cor do chat
 entregar pro god mali

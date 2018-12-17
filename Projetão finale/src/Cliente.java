@@ -45,6 +45,11 @@ public class Cliente //instancia janela
                                 if(recebido instanceof AvisoDeNomeJaExiste)
                                    janela.jogaErro("A sala escolhida � inv�lida!");
                                 else
+                                    while(recebido instanceof AvisoDeEntradaNaSala)
+                                    {
+                                        janela.exibeAvisoMovimento(((AvisoDeEntradaNaSala)recebido).toString());
+                                        recebido = (Coisa)receptor.readObject();
+                                    }
                                     if(recebido instanceof UsuarioDisponivel)
                                     break;
                     }
@@ -57,20 +62,25 @@ public class Cliente //instancia janela
 
                             if(recebido instanceof Mensagem)
                             {
-                                    if(((Mensagem)recebido).getRemetente().equals(""))
+                                    if(((Mensagem)recebido).getDestinatario() == null)
                                     {
-                                            System.out.println(((Mensagem)recebido).getRemetente());
-                                            janela.mostra(((Mensagem)recebido).getConteudo(), ((Mensagem)recebido).getRemetente());
+                                            System.out.println(((Mensagem)recebido).getEmissor());
+                                            janela.mostra(((Mensagem)recebido).getConteudo(), ((Mensagem)recebido).getEmissor());
                                     }
                                     else
                                     {
                                             System.out.println("Privada");
-                                            janela.mostra(((Mensagem)recebido).getConteudo(), ((Mensagem)recebido).getRemetente());
+                                            janela.mostra(((Mensagem)recebido).getConteudo(),((Mensagem)recebido).getEmissor(), "Voce");
                                             System.out.println("Enviada para mostrar");
                                     }
                             }
 
                             else 
+                                if(recebido instanceof AvisoUsuarioInexistente)
+                                {
+                                    janela.jogaErro(((AvisoUsuarioInexistente)recebido).toString());
+                                }
+                            else
                                 if(recebido instanceof AvisoDeEntradaNaSala )
                                 {
                                  janela.exibeAvisoMovimento(((AvisoDeEntradaNaSala)recebido).toString());

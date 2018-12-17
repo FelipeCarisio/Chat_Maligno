@@ -62,7 +62,7 @@ public class Sala
     int local = -1;
     for(int i = 0; i < this.usuarios.size(); i++)
     {
-        if (this.usuarios.get(i).getNome() == nom)
+        if (this.usuarios.get(i).getNome().equals(nom))
             local = i;
     }
     return local;

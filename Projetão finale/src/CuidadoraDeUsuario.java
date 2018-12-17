@@ -113,10 +113,12 @@ public class CuidadoraDeUsuario extends Thread
                                 }
                                 if(usuarios != null)
                                 {
-                                for(String nome : usuarios)
-                                {
-                                        this.usuario.envia(new AvisoDeEntradaNaSala(nome));
-                                }
+                                    for(int i = 0; i < salaSelecionada.getLotacao(); i++)
+                                        {
+                                          if(!this.usuario.getNome().equals(usuarios[i]))
+                                          this.usuario.envia(new AvisoDeEntradaNaSala(usuarios[i]));
+                                        }
+
                                 }
                                 synchronized(salaSelecionada)
                                 {
@@ -159,7 +161,7 @@ public class CuidadoraDeUsuario extends Thread
                 if(recebido instanceof Mensagem)
                 {
                     Mensagem novaMsg = (Mensagem)recebido;
-                    if(novaMsg.getRemetente() == null)
+                    if(novaMsg.getDestinatario() == null)
                     {
                         synchronized(salaAtual)
                         {
@@ -175,10 +177,10 @@ public class CuidadoraDeUsuario extends Thread
                     {
                         synchronized(salaAtual)
                         {
-                            if(salaAtual.existeUsuario(novaMsg.getRemetente()) > -1)
-                                salaAtual.getUsuario(novaMsg.getRemetente()).envia(novaMsg);
+                            if(salaAtual.existeUsuario(novaMsg.getDestinatario()) > -1)
+                                salaAtual.getUsuario(novaMsg.getDestinatario()).envia(novaMsg);
                             else
-                                this.usuario.envia(new AvisoUsuarioInexistente(novaMsg.getRemetente()));
+                                this.usuario.envia(new AvisoUsuarioInexistente(novaMsg.getDestinatario()));
                         }
                     }
                 }
